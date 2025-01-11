@@ -1,50 +1,68 @@
-# Welcome to your Expo app 👋
+# 📱 Manga Reader App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Eine moderne Manga-Reader-App, entwickelt mit React Native und Expo, die die MangaDex API nutzt.
 
-## Get started
+## 🌟 Features
 
-1. Install dependencies
+- 📚 Durchsuche tausende von Mangas
+- 🔥 Entdecke beliebte Manga-Titel
+- 📖 Lese Manga-Kapitel direkt in der App
+- 🔖 Setze Lesezeichen für deine Lieblingsmangas
+- 👤 Personalisiertes Benutzerkonto
 
-   ```bash
-   npm install
-   ```
+## 🛠 Technologien
 
-2. Start the app
+- React Native
+- Expo
+- TypeScript
+- MangaDex API
+- Expo Router
 
-   ```bash
-    npx expo start
-   ```
+## 🚀 Installation
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
+1. Repository klonen
 ```bash
-npm run reset-project
+git clone https://github.com/[dein-username]/manga-reader-app.git
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Ins Projektverzeichnis wechseln
+```bash
+cd manga-reader-app
+```
 
-## Learn more
+3. Dependencies installieren
+```bash
+npm install
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+4. App starten
+```bash
+npx expo start
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## 📱 Verwendung
 
-## Join the community
+- **Suche**: Nutze die Suchfunktion, um nach deinen Lieblingsmangas zu suchen
+- **Beliebte Manga**: Entdecke trending Manga-Titel
+- **Lesezeichen**: Speichere deine Lieblingsmangas für späteren Zugriff
+- **Konto**: Verwalte dein Benutzerprofil
 
-Join our community of developers creating universal apps.
+## 🤝 Beitragen
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Beiträge sind willkommen! Für größere Änderungen erstelle bitte zuerst ein Issue, um zu besprechen, was du ändern möchtest.
+
+## 📝 Lizenz
+
+[MIT](https://choosealicense.com/licenses/mit/)
+
+## 🙏 Danksagung
+
+- [MangaDex](https://mangadex.org) für die API
+- [Expo](https://expo.dev) für das großartige Entwickler-Framework
+- [React Native](https://reactnative.dev) für die mobile App-Entwicklung
+
+## 📞 Kontakt
+
+[Dein Name] - [@dein_twitter](https://twitter.com/dein_twitter) - email@example.com
+
+Projekt Link: [https://github.com/[dein-username]/manga-reader-app](https://github.com/[dein-username]/manga-reader-app)
