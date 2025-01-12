@@ -49,8 +49,8 @@ export default function ChaptersScreen() {
       <TouchableOpacity 
         style={styles.chapterItem}
         onPress={() => router.push({
-          pathname: "/manga/[id]/chapters",
-          params: { id: mangaId, chapterId: item.id }
+          pathname: "/manga/[id]/reader/[chapterId]",
+          params: { id: mangaId as string, chapterId: item.id }
         })}
       >
         <Text style={styles.chapterNumber}>Kapitel {chapterNumber}</Text>
