@@ -66,6 +66,10 @@ export interface Chapter {
     publishAt: string;
     translatedLanguage: string;
   };
+  relationships: Array<{
+    id: string;
+    type: string;
+  }>;
 }
 
 export const MangaDexApi = {
@@ -233,6 +237,25 @@ export const MangaDexApi = {
       return `https://uploads.mangadex.org/covers/${manga.id}/${coverRelationship.attributes.fileName}`;
     }
     return null;
+  },
+
+  getManga: async (mangaId: string): Promise<Manga> => {
+    try {
+      const response = await api.get(`/manga/${mangaId}`, {
+        params: {
+          includes: ['cover_art'],
+        },
+      });
+      return response.data.data;
+    } catch (error) {
+      console.error('Fehler beim Laden des Mangas:', error);
+      throw error;
+    }
+  },
+
+  getChapter: async (chapterId: string): Promise<Chapter> => {
+    const response = await api.get(`/chapter/${chapterId}`);
+    return response.data.data;
   }
 };
 

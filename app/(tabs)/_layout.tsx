@@ -23,7 +23,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="reading-marks"
+        name="bookmarks"
         options={{
           title: "Lesezeichen",
           tabBarIcon: ({ color, size }) => (
@@ -38,12 +38,6 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" size={size} color={color} />
           ),
-        }}
-      />
-      <Tabs.Screen 
-        name="index"
-        options={{
-          href: null,
         }}
       />
     </Tabs>
