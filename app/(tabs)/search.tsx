@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -31,15 +31,35 @@ const COLUMN_COUNT = 2;
 const GRID_PADDING = 16;
 const GRID_SPACING = 12;
 const ITEM_WIDTH = (width - (GRID_PADDING * 2) - (GRID_SPACING * (COLUMN_COUNT - 1))) / COLUMN_COUNT;
-const COVER_ASPECT_RATIO = 1.5; // Typisches Manga-Cover-Verhältnis
+const COVER_ASPECT_RATIO = 1.5;
 
-export default function SearchScreen() {
+export default function LibraryScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Manga[]>([]);
+  const [popularManga, setPopularManga] = useState<Manga[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingPopular, setIsLoadingPopular] = useState(true);
+
+  useEffect(() => {
+    loadPopularManga();
+  }, []);
+
+  const loadPopularManga = async () => {
+    try {
+      const results = await MangaDexApi.getPopularManga();
+      setPopularManga(results);
+    } catch (error) {
+      console.error('Fehler beim Laden beliebter Manga:', error);
+    } finally {
+      setIsLoadingPopular(false);
+    }
+  };
 
   const handleSearch = async () => {
-    if (searchQuery.trim().length === 0) return;
+    if (searchQuery.trim().length === 0) {
+      setSearchResults([]);
+      return;
+    }
     
     setIsLoading(true);
     try {
@@ -59,7 +79,10 @@ export default function SearchScreen() {
     return (
       <TouchableOpacity 
         style={styles.mangaItem}
-        onPress={() => router.push(`/manga-details?mangaId=${item.id}`)}
+        onPress={() => router.push({
+          pathname: "/manga-details",
+          params: { mangaId: item.id }
+        })}
       >
         <View style={styles.coverContainer}>
           {coverUrl ? (
@@ -105,7 +128,7 @@ export default function SearchScreen() {
 
         {isLoading ? (
           <ActivityIndicator size="large" color={COLORS.primary} />
-        ) : (
+        ) : searchQuery.trim().length > 0 ? (
           <FlatList
             data={searchResults}
             renderItem={renderMangaItem}
@@ -113,7 +136,28 @@ export default function SearchScreen() {
             contentContainerStyle={styles.gridContainer}
             numColumns={COLUMN_COUNT}
             columnWrapperStyle={styles.row}
+            ListEmptyComponent={
+              <View style={styles.emptyState}>
+                <Text style={styles.emptyStateText}>
+                  Keine Manga gefunden
+                </Text>
+              </View>
+            }
           />
+        ) : isLoadingPopular ? (
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        ) : (
+          <>
+            <Text style={styles.sectionTitle}>Beliebte Manga</Text>
+            <FlatList
+              data={popularManga}
+              renderItem={renderMangaItem}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={styles.gridContainer}
+              numColumns={COLUMN_COUNT}
+              columnWrapperStyle={styles.row}
+            />
+          </>
         )}
       </View>
     </SafeAreaView>
@@ -199,6 +243,24 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: COLORS.text,
     padding: 8,
+    textAlign: 'center',
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: COLORS.text,
+    padding: 16,
+    paddingBottom: 8,
+  },
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  emptyStateText: {
+    fontSize: 16,
+    color: COLORS.text + '80',
     textAlign: 'center',
   },
 });

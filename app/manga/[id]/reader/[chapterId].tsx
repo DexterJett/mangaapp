@@ -146,20 +146,20 @@ export default function ReaderScreen() {
 
   const toggleReadingDirection = () => {
     const newIsRTL = !isRTL;
+    const currentIndex = currentPageIndex;
+    
+    // Berechne den neuen Index basierend auf der aktuellen Position
+    const newIndex = pages.length - 1 - currentIndex;
+    
     setIsRTL(newIsRTL);
-    
-    // Berechne den neuen Index (gespiegelt)
-    const newIndex = pages.length - 1 - currentPageIndex;
-    
     setPages(prev => [...prev].reverse());
+    setCurrentPageIndex(newIndex);
     
-    // Scrolle zur entsprechenden Position nach dem Rendern
-    setTimeout(() => {
-      flatListRef.current?.scrollToIndex({
-        index: newIndex,
-        animated: false
-      });
-    }, 0);
+    // Scrolle zur entsprechenden Position
+    flatListRef.current?.scrollToIndex({
+      index: newIndex,
+      animated: false
+    });
   };
 
   // Füge onViewableItemsChanged hinzu

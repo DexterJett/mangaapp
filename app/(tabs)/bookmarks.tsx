@@ -57,9 +57,9 @@ export default function FavoritesScreen() {
     const title = item.attributes.title.en || item.attributes.title.ja || 'Unbekannter Titel';
     const coverUrl = MangaDexApi.getCoverUrl(item);
     
-    const navigateToChapter = () => {
+    const navigateToManga = () => {
       if (item.progress) {
-        // Wenn es einen Lesefortschritt gibt, gehe zum letzten gelesenen Kapitel
+        // Wenn es einen Lesefortschritt gibt, gehe direkt zum letzten gelesenen Kapitel
         router.push({
           pathname: "/manga/[id]/reader/[chapterId]",
           params: { 
@@ -68,10 +68,10 @@ export default function FavoritesScreen() {
           }
         });
       } else {
-        // Sonst zur Kapitelübersicht
+        // Sonst zur Manga-Details-Seite
         router.push({
-          pathname: "/manga/[id]/chapters",
-          params: { id: item.id }
+          pathname: "/manga-details",
+          params: { mangaId: item.id }
         });
       }
     };
@@ -79,7 +79,7 @@ export default function FavoritesScreen() {
     return (
       <TouchableOpacity 
         style={styles.mangaItem}
-        onPress={navigateToChapter}
+        onPress={navigateToManga}
       >
         <View style={styles.coverContainer}>
           {coverUrl && (
