@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   Text,
@@ -6,14 +6,14 @@ import {
   SafeAreaView,
   Platform,
   StatusBar,
-} from 'react-native';
+} from "react-native";
 
 const COLORS = {
-  primary: '#FF6B00',
-  secondary: '#000000',
-  background: '#FFFFFF',
-  text: '#1A1A1A',
-  textLight: '#666666',
+  primary: "#FF6B00",
+  secondary: "#000000",
+  background: "#FFFFFF",
+  text: "#1A1A1A",
+  textLight: "#666666",
 };
 
 export default function ShopScreen() {
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: COLORS.background,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   container: {
     flex: 1,
@@ -43,20 +43,20 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: COLORS.text,
     marginBottom: 12,
   },
   subtitle: {
     fontSize: 16,
     color: COLORS.textLight,
-    textAlign: 'center',
-    maxWidth: '80%',
+    textAlign: "center",
+    maxWidth: "80%",
   },
-}); 
+});
