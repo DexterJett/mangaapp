@@ -80,8 +80,8 @@ export default function LibraryScreen() {
       <TouchableOpacity 
         style={styles.mangaItem}
         onPress={() => router.push({
-          pathname: "/manga-details",
-          params: { mangaId: item.id }
+          pathname: "/(tabs)/manga/[id]/chapters",
+          params: { id: item.id }
         })}
       >
         <View style={styles.coverContainer}>

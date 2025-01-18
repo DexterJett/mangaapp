@@ -70,8 +70,8 @@ export default function FavoritesScreen() {
       } else {
         // Sonst zur Manga-Details-Seite
         router.push({
-          pathname: "/manga-details",
-          params: { mangaId: item.id }
+          pathname: "/(tabs)/manga/[id]/index",
+          params: { id: item.id }
         });
       }
     };

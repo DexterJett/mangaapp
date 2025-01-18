@@ -175,11 +175,21 @@ export const MangaDexApi = {
 
   getPopularManga: async (): Promise<Manga[]> => {
     try {
+      const ninetyDaysAgo = new Date();
+      ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+
       const response = await api.get('/manga', {
         params: {
-          'order[rating]': 'desc',
           limit: 20,
-          includes: ['cover_art'],
+          offset: 0,
+          'includes[]': ['cover_art'],
+          'contentRating[]': ['safe', 'suggestive'],
+          'order[followedCount]': 'desc',
+          'availableTranslatedLanguage[]': ['en'],
+          hasAvailableChapters: true,
+          includedTags: [],
+          excludedTags: [],
+          status: ['ongoing', 'completed']
         },
       });
       return response.data.data;

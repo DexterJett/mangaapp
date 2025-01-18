@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, Stack, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { MangaDexApi, Manga } from '../services/mangadex-api';
+import { MangaDexApi, Manga } from '../../../../services/mangadex-api';
 
 const COLORS = {
   primary: '#FF6B00',

@@ -54,6 +54,8 @@ export default function ReaderScreen() {
   const [currentChapter, setCurrentChapter] = useState<Chapter | null>(null);
   const [manga, setManga] = useState<any>(null);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [nextChapter, setNextChapter] = useState<Chapter | null>(null);
+  const [isLastPage, setIsLastPage] = useState(false);
 
   // Lade alles initial
   useEffect(() => {
@@ -182,11 +184,51 @@ export default function ReaderScreen() {
     index,
   });
 
+  // Lade das nächste Kapitel
+  useEffect(() => {
+    const loadNextChapter = async () => {
+      if (!manga || !currentChapter) return;
+      
+      try {
+        const chapters = await MangaDexApi.getChapters(manga.id);
+        const currentIndex = chapters.findIndex(ch => ch.id === currentChapter.id);
+        if (currentIndex < chapters.length - 1) {
+          setNextChapter(chapters[currentIndex + 1]);
+        }
+      } catch (error) {
+        console.error('Fehler beim Laden des nächsten Kapitels:', error);
+      }
+    };
+
+    loadNextChapter();
+  }, [manga, currentChapter]);
+
+  // Aktualisiere handlePageChange
+  const handlePageChange = React.useCallback(({ viewableItems }: any) => {
+    if (viewableItems[0]) {
+      const newIndex = viewableItems[0].index;
+      setCurrentPageIndex(newIndex);
+      setIsLastPage(newIndex === pages.length - 1);
+    }
+  }, [pages.length]);
+
+  const handleNextChapter = () => {
+    if (nextChapter && manga) {
+      router.replace({
+        pathname: "/manga/[id]/reader/[chapterId]",
+        params: { id: manga.id, chapterId: nextChapter.id }
+      });
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Stack.Screen
         options={{
           headerShown: showControls,
+          title: currentChapter ? 
+            `Kapitel ${currentChapter.attributes.chapter || ''} (${currentPageIndex + 1}/${pages.length})` : 
+            '',
           headerStyle: {
             backgroundColor: COLORS.background,
           },
@@ -200,16 +242,26 @@ export default function ReaderScreen() {
             </TouchableOpacity>
           ),
           headerRight: () => (
-            <TouchableOpacity 
-              onPress={toggleFavorite}
-              style={styles.headerButton}
-            >
-              <Ionicons 
-                name={isFavorite ? "heart" : "heart-outline"} 
-                size={24} 
-                color={COLORS.text} 
-              />
-            </TouchableOpacity>
+            <View style={styles.headerButtons}>
+              {isLastPage && nextChapter && (
+                <TouchableOpacity 
+                  onPress={handleNextChapter}
+                  style={styles.headerButton}
+                >
+                  <Ionicons name="arrow-forward-circle" size={24} color={COLORS.primary} />
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity 
+                onPress={toggleFavorite}
+                style={styles.headerButton}
+              >
+                <Ionicons 
+                  name={isFavorite ? "heart" : "heart-outline"} 
+                  size={24} 
+                  color={COLORS.text} 
+                />
+              </TouchableOpacity>
+            </View>
           ),
         }}
       />
@@ -234,7 +286,7 @@ export default function ReaderScreen() {
             horizontal
             pagingEnabled
             showsHorizontalScrollIndicator={false}
-            onViewableItemsChanged={onViewableItemsChanged}
+            onViewableItemsChanged={handlePageChange}
             viewabilityConfig={{
               itemVisiblePercentThreshold: 50
             }}
@@ -318,5 +370,9 @@ const styles = StyleSheet.create({
     color: COLORS.text,
     fontSize: 16,
     textAlign: 'center',
+  },
+  headerButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 }); 

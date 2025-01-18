@@ -9,7 +9,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { useLocalSearchParams, router, Stack } from 'expo-router';
-import { MangaDexApi, Chapter } from '../../../services/mangadex-api';
+import { MangaDexApi, Chapter } from '../../../../services/mangadex-api';
 
 const COLORS = {
   primary: '#FF6B00',
