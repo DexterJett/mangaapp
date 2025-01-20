@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, Stack, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { MangaDexApi, Manga } from '../../../../services/mangadex-api';
+import { MangaDexApi, Manga } from '../../../services/mangadex-api';
 
 const COLORS = {
   primary: '#FF6B00',
@@ -26,18 +26,18 @@ const COLORS = {
 };
 
 export default function MangaDetailsScreen() {
-  const { mangaId } = useLocalSearchParams();
+  const { id } = useLocalSearchParams<{ id: string }>();
   const [manga, setManga] = React.useState<Manga | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
     loadMangaDetails();
-  }, [mangaId]);
+  }, [id]);
 
   const loadMangaDetails = async () => {
     try {
       const response = await fetch(
-        `https://api.mangadex.org/manga/${mangaId}?includes[]=cover_art`
+        `https://api.mangadex.org/manga/${id}?includes[]=cover_art`
       );
       const data = await response.json();
       setManga(data.data);
@@ -98,7 +98,7 @@ export default function MangaDetailsScreen() {
               style={styles.readButton}
               onPress={() => router.push({
                 pathname: "/manga/[id]/chapters",
-                params: { id: mangaId }
+                params: { id }
               })}
             >
               <Text style={styles.readButtonText}>Kapitel anzeigen</Text>

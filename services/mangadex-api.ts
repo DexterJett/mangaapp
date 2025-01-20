@@ -101,8 +101,12 @@ export const MangaDexApi = {
         // Setze den Auth-Header für alle zukünftigen API-Requests
         api.defaults.headers.common['Authorization'] = `Bearer ${response.data.access_token}`;
         return true;
-      } catch (error) {
-        console.error('Login Fehler:', error);
+      } catch (error: any) {
+        if (error?.response?.status === 503) {
+          console.error('MangaDex ist derzeit nicht verfügbar. Bitte versuchen Sie es später erneut.');
+        } else {
+          console.error('Login Fehler:', error);
+        }
         return false;
       }
     },

@@ -62,15 +62,12 @@ export default function FavoritesScreen() {
         // Wenn es einen Lesefortschritt gibt, gehe direkt zum letzten gelesenen Kapitel
         router.push({
           pathname: "/manga/[id]/reader/[chapterId]",
-          params: { 
-            id: item.id,
-            chapterId: item.progress.chapterId
-          }
+          params: { id: item.id, chapterId: item.progress.chapterId }
         });
       } else {
         // Sonst zur Manga-Details-Seite
         router.push({
-          pathname: "/(tabs)/manga/[id]/index",
+          pathname: "/manga/[id]",
           params: { id: item.id }
         });
       }

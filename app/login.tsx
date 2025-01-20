@@ -44,7 +44,7 @@ export default function LoginScreen() {
       if (success) {
         router.replace('/(tabs)/search');
       } else {
-        setError('Login fehlgeschlagen. Bitte überprüfe deine Eingaben.');
+        setError('MangaDex ist derzeit nicht verfügbar. Bitte versuchen Sie es später erneut.');
       }
     } catch (error) {
       setError('Ein Fehler ist aufgetreten. Bitte versuche es später erneut.');
