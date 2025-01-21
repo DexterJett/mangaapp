@@ -1,9 +1,11 @@
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import qs from 'qs';
 import { MANGADEX_CLIENT_ID, MANGADEX_CLIENT_SECRET } from '@env';
+import { delay } from './utils';
 
 const AUTH_URL = 'https://auth.mangadex.org/realms/mangadex/protocol/openid-connect/token';
-const API_URL = 'https://api.mangadex.org';
+const BASE_URL = 'https://api.mangadex.org';
+const TIMEOUT = 10000; // 10 Sekunden Timeout
 
 // Konfiguration für den Client
 const CLIENT_CONFIG = {
@@ -11,10 +13,28 @@ const CLIENT_CONFIG = {
   client_secret: MANGADEX_CLIENT_SECRET,
 };
 
-const api = axios.create({
-  baseURL: API_URL,
-  timeout: 10000,
+// Erstelle eine neue Axios-Instanz mit angepasster Konfiguration
+const api: AxiosInstance = axios.create({
+  baseURL: BASE_URL,
+  timeout: TIMEOUT,
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  },
 });
+
+// Füge einen Interceptor für Fehlerbehandlung hinzu
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.message === 'Network Error') {
+      console.log('Netzwerkfehler erkannt, versuche erneut...');
+      await delay(1000);
+      return api.request(error.config);
+    }
+    return Promise.reject(error);
+  }
+);
 
 interface AuthTokens {
   access_token: string;
@@ -70,6 +90,23 @@ export interface Chapter {
     id: string;
     type: string;
   }>;
+}
+
+// Rate Limiting Konfiguration
+const API_DELAY = 1000; // 1 Sekunde Verzögerung zwischen Anfragen
+
+async function rateLimitedRequest(requestFn: () => Promise<any>) {
+  try {
+    const response = await requestFn();
+    return response;
+  } catch (error: any) {
+    if (error?.response?.status === 429) {
+      console.log('Rate limit erreicht, warte kurz...');
+      await delay(API_DELAY);
+      return rateLimitedRequest(requestFn);
+    }
+    throw error;
+  }
 }
 
 export const MangaDexApi = {
@@ -221,7 +258,10 @@ export const MangaDexApi = {
 
   getChapterPages: async (chapterId: string): Promise<string[]> => {
     try {
-      const response = await api.get(`/at-home/server/${chapterId}`);
+      const response = await rateLimitedRequest(() => 
+        api.get(`/at-home/server/${chapterId}`)
+      );
+      
       const { baseUrl, chapter } = response.data;
       
       if (!chapter?.dataSaver?.length) {
@@ -233,11 +273,7 @@ export const MangaDexApi = {
         (page: string) => `${baseUrl}/data-saver/${chapter.hash}/${page}`
       );
     } catch (error: any) {
-      if (error.response?.status === 404) {
-        console.warn('Kapitel wurde nicht gefunden oder ist nicht verfügbar');
-      } else {
-        console.error('Fehler beim Laden der Seiten:', error);
-      }
+      console.error('Fehler beim Laden der Seiten:', error);
       return [];
     }
   },
@@ -259,10 +295,14 @@ export const MangaDexApi = {
         params: {
           includes: ['cover_art'],
         },
+        timeout: TIMEOUT,
       });
       return response.data.data;
-    } catch (error) {
-      console.error('Fehler beim Laden des Mangas:', error);
+    } catch (error: any) {
+      console.error('Fehler beim Laden des Mangas:', error.message);
+      if (error.message === 'Network Error') {
+        throw new Error('Verbindungsfehler. Bitte überprüfe deine Internetverbindung.');
+      }
       throw error;
     }
   },

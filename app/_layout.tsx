@@ -7,18 +7,7 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="login" />
-        <Stack.Screen 
-          name="manga/[id]"
-          options={{ presentation: 'card' }}
-        />
-        <Stack.Screen 
-          name="manga/[id]/chapters"
-          options={{ presentation: 'card' }}
-        />
-        <Stack.Screen 
-          name="manga/[id]/reader/[chapterId]"
-          options={{ presentation: 'fullScreenModal' }}
-        />
+        <Stack.Screen name="manga" />
       </Stack>
     </GestureHandlerRootView>
   );

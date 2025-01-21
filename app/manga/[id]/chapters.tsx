@@ -7,9 +7,12 @@ import {
   StyleSheet,
   ActivityIndicator,
   SafeAreaView,
+  Platform,
+  StatusBar,
 } from 'react-native';
-import { useLocalSearchParams, router, Stack } from 'expo-router';
+import { useLocalSearchParams, router } from 'expo-router';
 import { MangaDexApi, Chapter } from '../../../services/mangadex-api';
+import { Ionicons } from '@expo/vector-icons';
 
 const COLORS = {
   primary: '#FF6B00',
@@ -60,16 +63,16 @@ export default function ChaptersScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Stack.Screen 
-        options={{
-          title: 'Kapitel',
-          headerStyle: {
-            backgroundColor: COLORS.background,
-          },
-          headerTintColor: COLORS.primary,
-        }}
-      />
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.header}>
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
+          <Ionicons name="arrow-back" size={24} color={COLORS.text} />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Kapitel</Text>
+      </View>
       
       {isLoading ? (
         <ActivityIndicator size="large" color={COLORS.primary} />
@@ -87,6 +90,29 @@ export default function ChaptersScreen() {
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+    backgroundColor: COLORS.background,
+  },
+  backButton: {
+    padding: 8,
+    marginRight: 8,
+  },
+  headerTitle: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: '600',
+    color: COLORS.text,
+  },
   container: {
     flex: 1,
     backgroundColor: COLORS.background,

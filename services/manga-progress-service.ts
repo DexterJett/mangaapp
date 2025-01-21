@@ -10,6 +10,7 @@ export interface ReadingProgress {
   pageIndex: number;
   lastReadAt: number;
   chapterNumber: string;
+  isRTL?: boolean;
 }
 
 export interface FavoriteManga extends Manga {

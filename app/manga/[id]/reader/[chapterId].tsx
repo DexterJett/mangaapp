@@ -92,16 +92,27 @@ export default function ReaderScreen() {
         // Prüfe Favoriten-Status
         const favorited = await MangaProgressService.isFavorite(mangaId);
         setIsFavorite(favorited);
+
+        // Setze RTL-Status aus dem Progress
+        const rtlStatus = progress?.isRTL || false;
+        setIsRTL(rtlStatus);
         
         // Lade Seiten
         const pageUrls = await MangaDexApi.getChapterPages(chapterId);
-        const finalPages = isRTL ? [...pageUrls].reverse() : pageUrls;
+        const finalPages = rtlStatus ? [...pageUrls].reverse() : pageUrls;
         setPages(finalPages);
         
-        // Setze den initialen Scroll-Index, wenn ein Fortschritt existiert
+        // Setze den initialen Scroll-Index
         if (progress && progress.chapterId === chapterId) {
-          setCurrentPageIndex(progress.pageIndex);
-          setInitialScrollIndex(progress.pageIndex);
+          // Wenn es der gleiche Chapter ist, nutze den gespeicherten Index
+          const savedIndex = progress.pageIndex;
+          setCurrentPageIndex(savedIndex);
+          setInitialScrollIndex(savedIndex);
+        } else {
+          // Bei einem neuen Kapitel
+          const startIndex = rtlStatus ? finalPages.length - 1 : 0;
+          setCurrentPageIndex(startIndex);
+          setInitialScrollIndex(startIndex);
         }
       } catch (error) {
         console.error('Fehler beim Laden der Daten:', error);
@@ -111,9 +122,9 @@ export default function ReaderScreen() {
     };
 
     loadInitialData();
-  }, [chapterId, isRTL]);
+  }, [chapterId]);
 
-  // Speichere Lesefortschritt bei Seitenwechsel
+  // Speichere Lesefortschritt bei Seitenwechsel oder RTL-Änderung
   useEffect(() => {
     const saveProgress = async () => {
       if (!manga || !currentChapter) return;
@@ -124,11 +135,12 @@ export default function ReaderScreen() {
         pageIndex: currentPageIndex,
         lastReadAt: Date.now(),
         chapterNumber: currentChapter.attributes.chapter || '0',
+        isRTL: isRTL,
       });
     };
 
     saveProgress();
-  }, [currentPageIndex, manga, currentChapter]);
+  }, [currentPageIndex, manga, currentChapter, isRTL]);
 
   const toggleFavorite = async () => {
     if (!manga) return;
@@ -208,9 +220,9 @@ export default function ReaderScreen() {
     if (viewableItems[0]) {
       const newIndex = viewableItems[0].index;
       setCurrentPageIndex(newIndex);
-      setIsLastPage(newIndex === pages.length - 1);
+      setIsLastPage(isRTL ? newIndex === 0 : newIndex === pages.length - 1);
     }
-  }, [pages.length]);
+  }, [pages.length, isRTL]);
 
   const handleNextChapter = () => {
     if (nextChapter && manga) {
@@ -227,7 +239,7 @@ export default function ReaderScreen() {
         options={{
           headerShown: showControls,
           title: currentChapter ? 
-            `Kapitel ${currentChapter.attributes.chapter || ''} (${currentPageIndex + 1}/${pages.length})` : 
+            `Kapitel ${currentChapter.attributes.chapter || ''} (${isRTL ? pages.length - currentPageIndex : currentPageIndex + 1}/${pages.length})` : 
             '',
           headerStyle: {
             backgroundColor: COLORS.background,

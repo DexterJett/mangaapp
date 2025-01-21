@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { Platform } from 'react-native';
 
 const COLORS = {
   primary: '#FF6B00',
@@ -19,12 +20,13 @@ export default function TabLayout() {
           borderTopColor: '#E5E5E5',
           height: 60,
           paddingBottom: 8,
-          paddingTop: 8,
+          marginBottom: Platform.OS === 'ios' ? 8 : 3,
         },
         tabBarActiveTintColor: COLORS.primary,
         tabBarInactiveTintColor: COLORS.inactive,
         tabBarLabelStyle: {
           fontSize: 12,
+          marginTop: -4,
         },
       }}
     >

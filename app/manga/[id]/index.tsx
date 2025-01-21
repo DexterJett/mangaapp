@@ -10,6 +10,7 @@ import {
   SafeAreaView,
   Platform,
   StatusBar,
+  Alert,
 } from 'react-native';
 import { useLocalSearchParams, Stack, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -35,14 +36,18 @@ export default function MangaDetailsScreen() {
   }, [id]);
 
   const loadMangaDetails = async () => {
+    if (!id) return;
+    
+    setIsLoading(true);
     try {
-      const response = await fetch(
-        `https://api.mangadex.org/manga/${id}?includes[]=cover_art`
-      );
-      const data = await response.json();
-      setManga(data.data);
+      const mangaData = await MangaDexApi.getManga(id);
+      setManga(mangaData);
     } catch (error) {
       console.error('Fehler beim Laden der Manga-Details:', error);
+      Alert.alert(
+        'Fehler',
+        'Die Manga-Details konnten nicht geladen werden. Bitte überprüfe deine Internetverbindung und versuche es erneut.'
+      );
     } finally {
       setIsLoading(false);
     }
@@ -70,21 +75,19 @@ export default function MangaDetailsScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Stack.Screen
-        options={{
-          title: '',
-          headerLeft: () => (
-            <TouchableOpacity 
-              onPress={() => router.back()}
-              style={styles.backButton}
-            >
-              <Ionicons name="arrow-back" size={24} color={COLORS.primary} />
-            </TouchableOpacity>
-          ),
-        }}
-      />
+      <View style={styles.header}>
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
+          <Ionicons name="arrow-back" size={24} color={COLORS.text} />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle} numberOfLines={1}>
+          {title}
+        </Text>
+      </View>
       <ScrollView style={styles.container}>
-        <View style={styles.header}>
+        <View style={styles.coverSection}>
           {coverUrl && (
             <Image
               source={{ uri: coverUrl }}
@@ -164,12 +167,27 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
     backgroundColor: COLORS.background,
+    zIndex: 1,
   },
   backButton: {
     padding: 8,
+    marginRight: 8,
   },
-  header: {
+  headerTitle: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: '600',
+    color: COLORS.text,
+  },
+  coverSection: {
     backgroundColor: COLORS.background,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.border,
