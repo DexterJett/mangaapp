@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Text,
   ActivityIndicator,
+  StatusBar,
 } from 'react-native';
 import { useLocalSearchParams, Stack, router } from 'expo-router';
 import { FlatList } from 'react-native-gesture-handler';
@@ -235,6 +236,11 @@ export default function ReaderScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar 
+        barStyle="light-content"
+        backgroundColor="black"
+        translucent
+      />
       <Stack.Screen
         options={{
           headerShown: showControls,
